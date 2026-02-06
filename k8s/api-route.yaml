@@ -1,0 +1,16 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: wedone-api
+  labels:
+    app: wedone
+    tier: backend
+spec:
+  to:
+    kind: Service
+    name: wedone-api
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

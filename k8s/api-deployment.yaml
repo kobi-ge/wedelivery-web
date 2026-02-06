@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wedone-api
+  labels:
+    app: wedone
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wedone
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: wedone
+        tier: backend
+    spec:
+      containers:
+        - name: web
+          image: kobigdocker/wedelivery:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DB_HOST
+              value: "db"
+            - name: DB_NAME
+              value: "wedelivery"
+            - name: DB_USER
+              value: "user"
+            - name: DB_PASS
+              value: "password"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
