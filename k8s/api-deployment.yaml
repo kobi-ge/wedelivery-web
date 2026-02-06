@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: kobigdocker/wedelivery:v1
+          image: kobigdocker/wedelivery:v2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
