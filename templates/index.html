@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>we-delivery | פתרונות לוגיסטיקה לאיקומרס</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -18,15 +19,23 @@
                             600: '#2E7D32', // Primary Brand Color
                             700: '#1B5E20',
                         }
+                    },
+                    boxShadow: {
+                        'nav': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                     }
                 }
             }
         }
     </script>
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Heebo', sans-serif;
         }
@@ -47,18 +56,56 @@
             background-size: cover;
             background-position: center;
         }
+
+        /* Pulse Animation */
+        @keyframes pulse-custom {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.7);
+            }
+
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 15px rgba(46, 125, 50, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(46, 125, 50, 0);
+            }
+        }
+
+        .btn-pulse {
+            animation: pulse-custom 2s infinite;
+        }
+
+        /* Card Hover Effect */
+        .how-it-works-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .how-it-works-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Sticky Navbar Shadow Class (Toggled via JS) */
+        .navbar-scrolled {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
     </style>
 </head>
 
 <body class="bg-gray-50 text-gray-800">
 
     <!-- Navbar -->
-    <nav class="bg-white shadow-md fixed w-full z-20 top-0 transition-all duration-300">
+    <nav id="main-navbar" class="bg-white sticky top-0 z-50 w-full transition-shadow duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a class="flex items-center gap-3" href="#">
                         <div class="flex-shrink-0">
+                            <!-- Logo (Do Not Change) -->
                             <svg width="50" height="50" viewBox="0 0 100 100" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <rect x="10" y="10" width="80" height="80" rx="15" fill="none" stroke="#1B5E20"
@@ -83,16 +130,32 @@
                     <a href="#faq"
                         class="text-gray-700 hover:text-brand-600 px-3 py-2 rounded-md text-base font-medium transition">שאלות
                         ותשובות</a>
-                    <a href="/join-us"
+
+                    {% if current_user.is_authenticated %}
+                    <!-- Logged In -->
+                    <a href="{{ url_for('dashboard') }}"
+                        class="text-gray-700 hover:text-brand-600 px-3 py-2 rounded-md text-base font-medium transition">
+                        <i class="bi bi-speedometer2 ml-2"></i>Dashboard
+                    </a>
+                    <a href="{{ url_for('logout') }}"
+                        class="text-white bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-full text-base font-bold shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5">
+                        Logout
+                    </a>
+                    {% else %}
+                    <!-- Not Logged In -->
+                    <a href="{{ url_for('login') }}"
+                        class="text-gray-700 hover:text-brand-600 px-3 py-2 rounded-md text-base font-medium transition">Login</a>
+                    <a href="{{ url_for('register') }}"
                         class="text-white bg-brand-600 hover:bg-brand-700 px-6 py-2.5 rounded-full text-base font-bold shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5">הצטרפו
                         אלינו</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-bg relative pt-32 pb-20 lg:pt-48 lg:pb-32 text-white">
+    <section class="hero-bg relative py-20 lg:py-32 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="lg:grid lg:grid-cols-12 lg:gap-8 items-center">
                 <div class="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-right">
@@ -106,8 +169,9 @@
                         שקט נפשי.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <!-- Join Button with Pulse Animation -->
                         <a href="/join-us"
-                            class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-lg text-brand-700 bg-white hover:bg-gray-100 transition shadow-xl">
+                            class="btn-pulse inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-lg text-brand-700 bg-white hover:bg-gray-100 transition shadow-xl">
                             פתחו חשבון עסקי
                         </a>
                         <a href="#how-it-works"
@@ -174,7 +238,7 @@
         </div>
     </section>
 
-    <!-- Trusted By / Logos Section (Bonus B) -->
+    <!-- Trusted By / Logos Section -->
     <section class="py-10 bg-gray-100 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-sm font-semibold text-gray-500 tracking-wider uppercase mb-6">חנויות מובילות שבוחרות בנו</p>
@@ -201,10 +265,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Step 1 -->
                 <div
-                    class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden border border-gray-100">
-                    <div class="h-48 w-full bg-gray-200">
+                    class="how-it-works-card group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden border border-gray-100">
+                    <div class="h-[200px] w-full bg-gray-200">
                         <img class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-                            src="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&h=400&q=80"
+                            src="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&w=600&q=80"
                             alt="Order">
                     </div>
                     <div class="p-6 text-center">
@@ -217,8 +281,8 @@
                 </div>
                 <!-- Step 2 -->
                 <div
-                    class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden border border-gray-100">
-                    <div class="h-48 w-full bg-gray-200">
+                    class="how-it-works-card group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden border border-gray-100">
+                    <div class="h-[200px] w-full bg-gray-200">
                         <img class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                             src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&h=400&q=80"
                             alt="Sync">
@@ -233,8 +297,8 @@
                 </div>
                 <!-- Step 3 -->
                 <div
-                    class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden border border-gray-100">
-                    <div class="h-48 w-full bg-gray-200">
+                    class="how-it-works-card group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden border border-gray-100">
+                    <div class="h-[200px] w-full bg-gray-200">
                         <img class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                             src="https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&h=400&q=80"
                             alt="Delivery">
@@ -249,8 +313,8 @@
                 </div>
                 <!-- Step 4 -->
                 <div
-                    class="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden border border-gray-100">
-                    <div class="h-48 w-full bg-gray-200">
+                    class="how-it-works-card group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden border border-gray-100">
+                    <div class="h-[200px] w-full bg-gray-200">
                         <img class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                             src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&h=400&q=80"
                             alt="Happy Customer">
@@ -339,41 +403,54 @@
     <!-- Footer -->
     <footer class="bg-gray-900 text-white">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-right">
+            <!-- Enhanced Footer Layout -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-right">
+
+                <!-- Quick Links (New) -->
                 <div class="mb-4">
+                    <h3 class="text-lg font-semibold mb-4 text-brand-500">קישורים מהירים</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">ראשי</a></li>
+                        <li><a href="#how-it-works" class="hover:text-white transition">איך זה עובד</a></li>
+                        <li><a href="#faq" class="hover:text-white transition">שאלות ותשובות</a></li>
+                        <li><a href="/join-us" class="hover:text-white transition">הצטרפו אלינו</a></li>
+                    </ul>
+                </div>
+
+                <div class="mb-4 col-span-2"> <!-- Center/Main info -->
                     <h3 class="text-xl font-bold mb-4">we-delivery</h3>
                     <p class="text-gray-400 text-sm">הפתרון הלוגיסטי המוביל לעסקי איקומרס בישראל.</p>
                 </div>
+
                 <div class="mb-4">
                     <h3 class="text-lg font-semibold mb-4 text-brand-500">יצירת קשר</h3>
                     <div class="space-y-2">
-                        <p class="text-gray-400 text-sm">טלפון: *5555</p>
+                        <!-- Clickable Phone -->
+                        <a href="tel:*5555" class="block text-gray-400 text-sm hover:text-white transition">
+                            <i class="fas fa-phone-alt ml-2"></i>*5555
+                        </a>
                         <!-- Email Link -->
                         <a href="mailto:info@wedelivery.co.il"
                             class="flex items-center justify-center md:justify-start gap-2 text-gray-400 hover:text-white transition group">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                class="h-5 w-5 group-hover:text-brand-500 transition" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                            </svg>
+                            <i class="fas fa-envelope ml-2 group-hover:text-brand-500 transition"></i>
                             info@wedelivery.co.il
                         </a>
+                        <div class="mt-4">
+                            <p class="text-gray-500 text-xs">שעות פעילות:</p>
+                            <p class="text-gray-400 text-sm">א'-ה': 08:00 - 18:00</p>
+                            <p class="text-gray-400 text-sm">ו': 08:00 - 13:00</p>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4 text-brand-500">שעות פעילות</h3>
-                    <p class="text-gray-400 text-sm">א'-ה': 08:00 - 18:00</p>
-                    <p class="text-gray-400 text-sm">ו': 08:00 - 13:00</p>
                 </div>
             </div>
             <div class="mt-8 border-t border-gray-800 pt-8 text-center">
-                <p class="text-sm text-gray-500">&copy; 2026 we-delivery. כל הזכויות שמורות.</p>
+                <!-- Dynamic Year -->
+                <p class="text-sm text-gray-500">&copy; <span id="year"></span> we-delivery. כל הזכויות שמורות.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Floating WhatsApp Widget (Bonus A) -->
+    <!-- Floating WhatsApp Widget -->
     <a href="https://wa.me/972555555555?text=היי,%20אני%20בעל%20עסק%20ומתעניין%20בשירותי%20המשלוחים%20שלכם"
         target="_blank"
         class="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-2xl transition transform hover:scale-110 flex items-center justify-center">
@@ -394,6 +471,19 @@
                 content.classList.add('active');
             }
         }
+
+        // Navbar Scroll Shadow Effect
+        window.addEventListener('scroll', function () {
+            const navbar = document.getElementById('main-navbar');
+            if (window.scrollY > 10) {
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+            }
+        });
+
+        // Dynamic Year
+        document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>
 
